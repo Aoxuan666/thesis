@@ -1154,7 +1154,8 @@ def run_qa_assertions(docx_path, doc_obj, total_pdf_pages, toc_page_map):
     assert head == b"PK\x03\x04", f"Output .docx header corrupted/encrypted: {head!r}"
 
     with zipfile.ZipFile(docx_path) as z:
-        root = ET.fromstring(z.read("word/document.xml"))
+        raw_doc_xml = z.read("word/document.xml").decode("utf-8")
+        root = ET.fromstring(raw_doc_xml)
         settings = z.read("word/settings.xml").decode("utf-8")
         media = [n for n in z.namelist() if n.startswith("word/media/")]
 
@@ -1198,11 +1199,10 @@ def run_qa_assertions(docx_path, doc_obj, total_pdf_pages, toc_page_map):
     ]
     missing_nums = [s for s in must_have if s not in all_text]
 
-    # Check A4 & TJAU margins & evenAndOddHeaders
+    # Check A4 & TJAU margins & evenAndOddHeaders on raw document.xml
     has_even_odd = "evenAndOddHeaders" in settings
-    doc_xml_str = ET.tostring(root, encoding="unicode")
-    has_a4 = 'w:w="11906"' in doc_xml_str and 'w:h="16838"' in doc_xml_str
-    has_margins = 'w:left="1701"' in doc_xml_str and 'w:right="1134"' in doc_xml_str
+    has_a4 = 'w:w="11906"' in raw_doc_xml and 'w:h="16838"' in raw_doc_xml
+    has_margins = 'w:left="1701"' in raw_doc_xml and 'w:right="1134"' in raw_doc_xml
 
     # Bidirectional citation check
     uncited_in_db = sorted(set(REFS.keys()) - CITED_KEYS)

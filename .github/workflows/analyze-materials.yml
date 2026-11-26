@@ -1,0 +1,541 @@
+name: Stage 1 - Cloud Analyze Thesis Materials
+
+on:
+  workflow_dispatch:
+    inputs:
+      output_branch:
+        description: 'Branch name to publish Markdown analysis reports'
+        required: true
+        default: 'cloud-analysis'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/analyze-materials.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    env:
+      OUTPUT_BRANCH: ${{ inputs.output_branch || 'cloud-analysis' }}
+      PYTHONIOENCODING: utf-8
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install LibreOffice and Tesseract OCR (zh/en)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libreoffice-writer \
+            tesseract-ocr \
+            tesseract-ocr-chi-sim \
+            python3-venv
+
+      - name: Set up Python virtual environment
+        run: |
+          python3 -m venv /tmp/venv
+          /tmp/venv/bin/pip install --upgrade pip
+          /tmp/venv/bin/pip install python-docx python-pptx pymupdf pillow pytesseract
+
+      - name: Analyze all 8 thesis materials in cloud
+        run: |
+          cat << 'PYEOF' > /tmp/analyze_all.py
+          # -*- coding: utf-8 -*-
+          import os
+          import re
+          import subprocess
+          import zipfile
+          from datetime import datetime, timezone
+          import xml.etree.ElementTree as ET
+
+          import fitz  # PyMuPDF
+          import docx
+          from docx.oxml.text.paragraph import CT_P
+          from docx.oxml.table import CT_Tbl
+          from docx.table import Table
+          from docx.text.paragraph import Paragraph
+          from pptx import Presentation
+          from PIL import Image
+          import pytesseract
+
+          OUT_DIR = "/tmp/analysis_out"
+          CONV_DIR = "/tmp/conv_out"
+          os.makedirs(OUT_DIR, exist_ok=True)
+          os.makedirs(CONV_DIR, exist_ok=True)
+
+          W_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+          M_NS = "http://schemas.openxmlformats.org/officeDocument/2006/math"
+
+          EXPECTED_FILES = [
+              "大论文.docx",
+              "4-天津农学院硕士研究生学位论文书写格式-2019.doc",
+              "agriculture-16-01845.pdf",
+              "animals-16-01417-v2.pdf",
+              "商品肉鸡养殖环境监控系统-骆赛.pdf",
+              "肉鸡养殖环境监测与管理平台-骆赛.pdf",
+              "骆赛_中期答辩终稿.pptx",
+              "骆赛_第二次中期考核.pptx",
+          ]
+
+
+          def check_magic(path):
+              with open(path, "rb") as f:
+                  head = f.read(16)
+              hx = " ".join(f"{b:02x}" for b in head[:12])
+              if head.startswith(b"%PDF-"):
+                  kind = "VALID_PDF"
+              elif head.startswith(b"PK\x03\x04"):
+                  kind = "VALID_OOXML_ZIP"
+              elif head.startswith(b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1"):
+                  kind = "VALID_OLE2_DOC"
+              else:
+                  kind = "UNKNOWN_OR_ENCRYPTED"
+              return kind, hx
+
+
+          def extract_omath_text(p_elem):
+              """Extract paragraph text including inline OMML equation text."""
+              parts = []
+              for node in p_elem.iter():
+                  tag = node.tag
+                  if tag == f"{{{W_NS}}}t" and node.text:
+                      parts.append(node.text)
+                  elif tag == f"{{{M_NS}}}t" and node.text:
+                      parts.append(node.text)
+                  elif tag == f"{{{W_NS}}}tab":
+                      parts.append("\t")
+                  elif tag == f"{{{W_NS}}}br":
+                      parts.append("\n")
+              return "".join(parts)
+
+
+          def iter_block_items(doc):
+              body = doc.element.body
+              for child in body.iterchildren():
+                  if isinstance(child, CT_P):
+                      yield ("p", Paragraph(child, doc), child)
+                  elif isinstance(child, CT_Tbl):
+                      yield ("tbl", Table(child, doc), child)
+
+
+          def render_table_md(tbl):
+              rows = []
+              for row in tbl.rows:
+                  cells = [re.sub(r"\s+", " ", c.text.strip()).replace("|", "\\|") for c in row.cells]
+                  rows.append(cells)
+              if not rows:
+                  return ""
+              col_n = max(len(r) for r in rows)
+              norm = [r + [""] * (col_n - len(r)) for r in rows]
+              lines = [
+                  "| " + " | ".join(norm[0]) + " |",
+                  "| " + " | ".join(["---"] * col_n) + " |",
+              ]
+              for r in norm[1:]:
+                  lines.append("| " + " | ".join(r) + " |")
+              return "\n".join(lines)
+
+
+          def extract_docx(path, out_md, title):
+              doc = docx.Document(path)
+              with zipfile.ZipFile(path) as z:
+                  media = [n for n in z.namelist() if n.startswith("word/media/")]
+                  settings_xml = z.read("word/settings.xml").decode("utf-8", errors="ignore") if "word/settings.xml" in z.namelist() else ""
+
+              out = [f"# {title}", "", f"- 文件：`{os.path.basename(path)}`", f"- 大小：{os.path.getsize(path):,} bytes", f"- 内嵌图片数：{len(media)}", f"- 奇偶页不同页眉设置：`{'evenAndOddHeaders' in settings_xml}`", ""]
+
+              # Section layout info
+              out.append("## 页面与节设置")
+              for idx, sec in enumerate(doc.sections, 1):
+                  def mm(val):
+                      return f"{val.mm:.1f}mm" if val is not None else "N/A"
+                  hdr_txt = " / ".join(p.text.strip() for p in sec.header.paragraphs if p.text.strip())
+                  even_hdr = " / ".join(p.text.strip() for p in sec.even_page_header.paragraphs if p.text.strip())
+                  ftr_txt = " / ".join(p.text.strip() for p in sec.footer.paragraphs if p.text.strip())
+                  out.append(
+                      f"- Section {idx}: page={mm(sec.page_width)}x{mm(sec.page_height)}, "
+                      f"margins(T/B/L/R)={mm(sec.top_margin)}/{mm(sec.bottom_margin)}/{mm(sec.left_margin)}/{mm(sec.right_margin)}, "
+                      f"hdr={mm(sec.header_distance)}, ftr={mm(sec.footer_distance)}, "
+                      f"header=`{hdr_txt}`, even_header=`{even_hdr}`, footer=`{ftr_txt}`"
+                  )
+              out.append("")
+
+              headings = []
+              p_count = 0
+              t_count = 0
+              omath_count = 0
+              cjk_chars = 0
+              body_lines = ["## 完整正文与表格（按文档顺序）", ""]
+
+              for kind, obj, elem in iter_block_items(doc):
+                  if kind == "p":
+                      has_omath = any(n.tag == f"{{{M_NS}}}oMath" for n in elem.iter())
+                      if has_omath:
+                          omath_count += sum(1 for n in elem.iter() if n.tag == f"{{{M_NS}}}oMath")
+                      txt = extract_omath_text(elem).strip()
+                      style = obj.style.name if obj.style else "None"
+                      has_img = bool(elem.findall(f".//{{{W_NS}}}drawing"))
+                      if not txt and not has_img:
+                          continue
+                      p_count += 1
+                      cjk_chars += len(re.findall(r"[\u4e00-\u9fff]", txt))
+                      tag = f"[{style}]"
+                      if has_omath:
+                          tag += "[OMML]"
+                      if has_img:
+                          tag += "[IMG]"
+                      if "Heading" in style or "标题" in style or re.match(r"^(第[一二三四五六七八九十0-9]+章|\d+\.\d+(\.\d+)?\s|摘\s*要|Abstract|目\s*录|参考文献|致\s*谢|攻读)", txt):
+                          headings.append(f"- P{p_count} `{style}`: {txt[:120]}")
+                      body_lines.append(f"**P{p_count}** `{tag}` {txt}")
+                      body_lines.append("")
+                  else:
+                      t_count += 1
+                      body_lines.append(f"### [Table {t_count}]")
+                      body_lines.append("")
+                      body_lines.append(render_table_md(obj))
+                      body_lines.append("")
+
+              out.append("## 文档统计")
+              out.append(f"- 非空段落数：{p_count}")
+              out.append(f"- 中文字符数：{cjk_chars}")
+              out.append(f"- 表格数：{t_count}")
+              out.append(f"- OMML 公式数：{omath_count}")
+              out.append(f"- 媒体文件：{', '.join(media[:30])}{' ...' if len(media) > 30 else ''}")
+              out.append("")
+              out.append("## 提取到的章节/标题大纲")
+              out.extend(headings if headings else ["- （未检测到标准标题样式）"])
+              out.append("")
+              out.extend(body_lines)
+
+              with open(out_md, "w", encoding="utf-8") as f:
+                  f.write("\n".join(out))
+
+              return {
+                  "paragraphs": p_count,
+                  "cjk_chars": cjk_chars,
+                  "tables": t_count,
+                  "omath": omath_count,
+                  "images": len(media),
+                  "headings": headings,
+              }
+
+
+          def extract_pdf(path, out_md, title, allow_ocr=False, max_ocr_pages=30):
+              doc = fitz.open(path)
+              total_pages = len(doc)
+              ocr_pages = 0
+              total_imgs = 0
+              img_inventory = []
+              captions = []
+              sections = [
+                  f"# {title}",
+                  "",
+                  f"- 文件：`{os.path.basename(path)}`",
+                  f"- 大小：{os.path.getsize(path):,} bytes",
+                  f"- 总页数：{total_pages}",
+                  f"- 元数据：`{doc.metadata}`",
+                  "",
+              ]
+              page_blocks = []
+
+              for idx in range(total_pages):
+                  pg = doc[idx]
+                  txt = pg.get_text("text").strip()
+                  imgs = pg.get_images(full=True)
+                  total_imgs += len(imgs)
+                  for im_i, im in enumerate(imgs, 1):
+                      xref = im[0]
+                      w, h = im[2], im[3]
+                      if w >= 120 and h >= 120:
+                          img_inventory.append(f"- Page {idx+1} img#{im_i} (xref={xref}): {w}x{h}")
+
+                  used_ocr = False
+                  if allow_ocr and len(txt) < 40 and ocr_pages < max_ocr_pages:
+                      pix = pg.get_pixmap(dpi=200, alpha=False, colorspace=fitz.csRGB)
+                      pil_img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+                      ocr_txt = pytesseract.image_to_string(pil_img, lang="chi_sim+eng").strip()
+                      if ocr_txt:
+                          txt = f"[OCR 提取]\n{ocr_txt}"
+                          used_ocr = True
+                          ocr_pages += 1
+
+                  for line in txt.splitlines():
+                      s = line.strip()
+                      if re.match(r"^(Figure|Fig\.|Table|图\s*\d|表\s*\d)", s, re.I):
+                          captions.append(f"- P{idx+1}: {s[:180]}")
+
+                  header = f"## Page {idx+1} (chars={len(txt)}, imgs={len(imgs)}{', OCR' if used_ocr else ''})"
+                  page_blocks.append(header)
+                  page_blocks.append("")
+                  page_blocks.append(txt if txt else "_(无可见文本)_")
+                  page_blocks.append("")
+
+              doc.close()
+
+              sections.append(f"- 嵌入图片总数：{total_imgs}（>=120px 有效图 {len(img_inventory)} 张）")
+              if allow_ocr:
+                  sections.append(f"- OCR 识别页数：{ocr_pages}")
+              sections.append("")
+              sections.append("## 图表题注索引（自动识别）")
+              sections.extend(captions[:120] if captions else ["- （未匹配到标准 Figure/Table/图/表 题注）"])
+              sections.append("")
+              sections.append("## 大尺寸嵌入式图片清单（>=120px）")
+              sections.extend(img_inventory[:150] if img_inventory else ["- （无）"])
+              sections.append("")
+              sections.append("## 逐页全文")
+              sections.append("")
+              sections.extend(page_blocks)
+
+              with open(out_md, "w", encoding="utf-8") as f:
+                  f.write("\n".join(sections))
+
+              return {
+                  "pages": total_pages,
+                  "images": total_imgs,
+                  "large_images": len(img_inventory),
+                  "ocr_pages": ocr_pages,
+                  "captions": len(captions),
+              }
+
+
+          def extract_shapes_recursive(shapes, lines, img_counter):
+              for sh in shapes:
+                  if sh.shape_type == 6:  # GROUP
+                      extract_shapes_recursive(sh.shapes, lines, img_counter)
+                      continue
+                  if sh.shape_type == 13:  # PICTURE
+                      img_counter[0] += 1
+                      continue
+                  if getattr(sh, "has_table", False):
+                      tbl = sh.table
+                      rows = []
+                      for r in tbl.rows:
+                          rows.append([re.sub(r"\s+", " ", c.text.strip()).replace("|", "\\|") for c in r.cells])
+                      if rows:
+                          col_n = max(len(r) for r in rows)
+                          norm = [r + [""] * (col_n - len(r)) for r in rows]
+                          lines.append("")
+                          lines.append("| " + " | ".join(norm[0]) + " |")
+                          lines.append("| " + " | ".join(["---"] * col_n) + " |")
+                          for r in norm[1:]:
+                              lines.append("| " + " | ".join(r) + " |")
+                          lines.append("")
+                      continue
+                  if getattr(sh, "has_text_frame", False):
+                      for p in sh.text_frame.paragraphs:
+                          t = p.text.strip()
+                          if t:
+                              prefix = "  " * p.level + "- "
+                              lines.append(prefix + t)
+
+
+          def extract_pptx(path, label):
+              prs = Presentation(path)
+              total_slides = len(prs.slides)
+              total_imgs = 0
+              out = [
+                  f"## {label} (`{os.path.basename(path)}`)",
+                  "",
+                  f"- 大小：{os.path.getsize(path):,} bytes",
+                  f"- 总页数：{total_slides}",
+                  "",
+              ]
+              for idx, slide in enumerate(prs.slides, 1):
+                  img_counter = [0]
+                  slide_lines = []
+                  extract_shapes_recursive(slide.shapes, slide_lines, img_counter)
+                  total_imgs += img_counter[0]
+                  notes = ""
+                  if slide.has_notes_slide and slide.notes_slide.notes_text_frame:
+                      notes = slide.notes_slide.notes_text_frame.text.strip()
+                  out.append(f"### Slide {idx} (images={img_counter[0]})")
+                  out.append("")
+                  out.extend(slide_lines if slide_lines else ["_(无文本)_"])
+                  if notes:
+                      out.append("")
+                      out.append(f"> **演讲备注**: {notes}")
+                  out.append("")
+              return "\n".join(out), {"slides": total_slides, "images": total_imgs}
+
+
+          def main():
+              summary = [
+                  "# 云端全量材料解析总览与校验清单",
+                  "",
+                  f"- 生成时间（UTC）：{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}",
+                  f"- 运行环境：GitHub Actions `ubuntu-latest`（纯云端 Linux，无任何本地终端加密）",
+                  "",
+                  "## 1. 仓库 8 份材料完整性与明文文件头核验",
+                  "",
+                  "| 文件名 | 大小 (bytes) | 文件头校验 | 前 12 字节 Hex | 解析输出 |",
+                  "| --- | ---: | --- | --- | --- |",
+              ]
+
+              present = {}
+              for fname in EXPECTED_FILES:
+                  if os.path.exists(fname):
+                      sz = os.path.getsize(fname)
+                      kind, hx = check_magic(fname)
+                      present[fname] = (sz, kind, hx)
+                  else:
+                      present[fname] = (0, "MISSING", "")
+
+              # 1) 大论文.docx
+              thesis_stats = {}
+              if present["大论文.docx"][0] > 0:
+                  thesis_stats = extract_docx(
+                      "大论文.docx",
+                      os.path.join(OUT_DIR, "01_thesis_original.md"),
+                      "大论文原文完整解析（GitHub 原始明文版）",
+                  )
+              summary.append(f"| `大论文.docx` | {present['大论文.docx'][0]:,} | `{present['大论文.docx'][1]}` | `{present['大论文.docx'][2]}` | `analysis/01_thesis_original.md` |")
+
+              # 2) 格式规范 .doc -> .docx via LibreOffice
+              spec_doc = "4-天津农学院硕士研究生学位论文书写格式-2019.doc"
+              spec_stats = {}
+              if present[spec_doc][0] > 0:
+                  subprocess.run(
+                      ["libreoffice", "--headless", "--convert-to", "docx", "--outdir", CONV_DIR, spec_doc],
+                      check=True,
+                  )
+                  converted_docx = [
+                      os.path.join(CONV_DIR, fn)
+                      for fn in os.listdir(CONV_DIR)
+                      if fn.lower().endswith(".docx")
+                  ]
+                  assert converted_docx, f"LibreOffice failed to produce .docx in {CONV_DIR}"
+                  spec_stats = extract_docx(
+                      converted_docx[0],
+                      os.path.join(OUT_DIR, "02_format_spec_tjau.md"),
+                      "天津农学院硕士研究生学位论文书写格式规范（2019）完整解析",
+                  )
+              summary.append(f"| `{spec_doc}` | {present[spec_doc][0]:,} | `{present[spec_doc][1]}` | `{present[spec_doc][2]}` | `analysis/02_format_spec_tjau.md` |")
+
+              # 3) agriculture-16-01845.pdf
+              agr_stats = {}
+              if present["agriculture-16-01845.pdf"][0] > 0:
+                  agr_stats = extract_pdf(
+                      "agriculture-16-01845.pdf",
+                      os.path.join(OUT_DIR, "03_paper_agriculture.md"),
+                      "英文论文 1：agriculture-16-01845.pdf 完整解析",
+                      allow_ocr=False,
+                  )
+              summary.append(f"| `agriculture-16-01845.pdf` | {present['agriculture-16-01845.pdf'][0]:,} | `{present['agriculture-16-01845.pdf'][1]}` | `{present['agriculture-16-01845.pdf'][2]}` | `analysis/03_paper_agriculture.md` |")
+
+              # 4) animals-16-01417-v2.pdf
+              ani_stats = {}
+              if present["animals-16-01417-v2.pdf"][0] > 0:
+                  ani_stats = extract_pdf(
+                      "animals-16-01417-v2.pdf",
+                      os.path.join(OUT_DIR, "04_paper_animals.md"),
+                      "英文论文 2：animals-16-01417-v2.pdf 完整解析",
+                      allow_ocr=False,
+                  )
+              summary.append(f"| `animals-16-01417-v2.pdf` | {present['animals-16-01417-v2.pdf'][0]:,} | `{present['animals-16-01417-v2.pdf'][1]}` | `{present['animals-16-01417-v2.pdf'][2]}` | `analysis/04_paper_animals.md` |")
+
+              # 5) 2 份成果/系统 PDF（开启扫描件自动 OCR 兜底）
+              ach_files = [
+                  ("成果 PDF 1：商品肉鸡养殖环境监控系统-骆赛", "商品肉鸡养殖环境监控系统-骆赛.pdf"),
+                  ("成果 PDF 2：肉鸡养殖环境监测与管理平台-骆赛", "肉鸡养殖环境监测与管理平台-骆赛.pdf"),
+              ]
+              ach_parts = ["# 新增成果 / 系统材料 PDF 完整解析（含自动 OCR）", ""]
+              ach_stats_all = {}
+              for label, fname in ach_files:
+                  if present[fname][0] > 0:
+                      tmp_md = os.path.join(CONV_DIR, fname + ".md")
+                      st = extract_pdf(fname, tmp_md, label, allow_ocr=True, max_ocr_pages=30)
+                      ach_stats_all[fname] = st
+                      with open(tmp_md, "r", encoding="utf-8") as tf:
+                          ach_parts.append(tf.read())
+                          ach_parts.append("\n---\n")
+                  summary.append(f"| `{fname}` | {present[fname][0]:,} | `{present[fname][1]}` | `{present[fname][2]}` | `analysis/05_achievements_pdfs.md` |")
+              with open(os.path.join(OUT_DIR, "05_achievements_pdfs.md"), "w", encoding="utf-8") as f:
+                  f.write("\n".join(ach_parts))
+
+              # 6) 2 份中期答辩 PPTX
+              ppt_files = [
+                  ("中期答辩 PPT 1：中期答辩终稿", "骆赛_中期答辩终稿.pptx"),
+                  ("中期考核 PPT 2：第二次中期考核", "骆赛_第二次中期考核.pptx"),
+              ]
+              ppt_parts = ["# 新增中期答辩 / 考核 PPT 逐页解析", ""]
+              ppt_stats_all = {}
+              for label, fname in ppt_files:
+                  if present[fname][0] > 0:
+                      md_txt, st = extract_pptx(fname, label)
+                      ppt_stats_all[fname] = st
+                      ppt_parts.append(md_txt)
+                      ppt_parts.append("\n---\n")
+                  summary.append(f"| `{fname}` | {present[fname][0]:,} | `{present[fname][1]}` | `{present[fname][2]}` | `analysis/06_midterm_ppts.md` |")
+              with open(os.path.join(OUT_DIR, "06_midterm_ppts.md"), "w", encoding="utf-8") as f:
+                  f.write("\n".join(ppt_parts))
+
+              summary.extend([
+                  "",
+                  "## 2. 各材料结构与体量统计",
+                  "",
+                  f"- **`大论文.docx`**：非空段落 `{thesis_stats.get('paragraphs', 0)}`，中文字符 `{thesis_stats.get('cjk_chars', 0)}`，表格 `{thesis_stats.get('tables', 0)}`，公式 `{thesis_stats.get('omath', 0)}`，内嵌图片 `{thesis_stats.get('images', 0)}`",
+                  f"- **格式规范 `.doc`**：非空段落 `{spec_stats.get('paragraphs', 0)}`，表格 `{spec_stats.get('tables', 0)}`",
+                  f"- **`agriculture-16-01845.pdf`**：总页数 `{agr_stats.get('pages', 0)}`，大尺寸插图 `{agr_stats.get('large_images', 0)}`，图表题注 `{agr_stats.get('captions', 0)}`",
+                  f"- **`animals-16-01417-v2.pdf`**：总页数 `{ani_stats.get('pages', 0)}`，大尺寸插图 `{ani_stats.get('large_images', 0)}`，图表题注 `{ani_stats.get('captions', 0)}`",
+                  f"- **成果 PDF**：`{ach_stats_all}`",
+                  f"- **中期 PPT**：`{ppt_stats_all}`",
+                  "",
+                  "## 3. 原始 `大论文.docx` 章节大纲快照",
+                  "",
+              ])
+              summary.extend(thesis_stats.get("headings", ["- （空）"])[:120])
+
+              summary_path = os.path.join(OUT_DIR, "00_SUMMARY_AND_INVENTORY.md")
+              with open(summary_path, "w", encoding="utf-8") as f:
+                  f.write("\n".join(summary))
+
+              print("ALL 8 MATERIALS ANALYZED SUCCESSFULLY!")
+
+
+          if __name__ == "__main__":
+              main()
+          PYEOF
+          /tmp/venv/bin/python /tmp/analyze_all.py
+          ls -lh /tmp/analysis_out
+
+      - name: Publish Step Summary
+        run: |
+          cat /tmp/analysis_out/00_SUMMARY_AND_INVENTORY.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload analysis report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: thesis-cloud-analysis-md
+          path: /tmp/analysis_out/
+          retention-days: 30
+
+      - name: Publish pure Markdown analysis to orphan branch
+        run: |
+          WORK_BRANCH_DIR="/tmp/publish_branch"
+          rm -rf "$WORK_BRANCH_DIR"
+          mkdir -p "$WORK_BRANCH_DIR/analysis"
+          cp /tmp/analysis_out/*.md "$WORK_BRANCH_DIR/analysis/"
+          cat << 'EOF' > "$WORK_BRANCH_DIR/README.md"
+          # Cloud Analysis Output (`cloud-analysis`)
+
+          This branch contains pure Markdown analysis reports extracted on GitHub Actions (`ubuntu-latest`) from all 8 source files on `main`.
+          No binary Office/PDF files are stored on this branch.
+          EOF
+
+          cd "$WORK_BRANCH_DIR"
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config core.quotepath false
+          git checkout -b "${OUTPUT_BRANCH}"
+          git add .
+          git commit -m "chore: cloud analysis of all 8 thesis materials"
+          git remote add origin "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+          git push --force origin "${OUTPUT_BRANCH}"

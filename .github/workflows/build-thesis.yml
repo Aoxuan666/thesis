@@ -31,11 +31,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install LibreOffice, CJK/Liberation fonts, and Python venv
+      - name: Install LibreOffice (Writer + Math), CJK/Liberation/Math fonts, and Python venv
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
             libreoffice-writer \
+            libreoffice-math \
+            fonts-opensymbol \
             fonts-noto-cjk \
             fonts-liberation \
             fonts-dejavu-core \

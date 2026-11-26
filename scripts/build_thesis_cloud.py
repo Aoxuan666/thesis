@@ -463,9 +463,14 @@ def renumber_ch4_table_refs(text):
 # =====================================================================
 def add_front_matter(doc):
     # --- 1. 中文封面（附件1(1) 全日制学术型硕士论文中文封皮）---
-    doc.add_custom_p(
-        "分类号：TP391.9                                                     密  级：公开",
-        align="left", east_asia="宋体", sz_pt=12.0, line_pt=20.0, before_pt=0, after_pt=24
+    doc.body_parts.append(
+        '<w:p><w:pPr><w:spacing w:before="0" w:after="480" w:line="400" w:lineRule="exact"/>'
+        f'<w:tabs><w:tab w:val="right" w:pos="{doc.CONTENT_WIDTH_TWIPS}"/></w:tabs></w:pPr>'
+        '<w:r><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:eastAsia="宋体"/><w:sz w:val="24"/><w:szCs w:val="24"/></w:rPr>'
+        '<w:t xml:space="preserve">分类号：TP391.9</w:t></w:r>'
+        '<w:r><w:tab/></w:r>'
+        '<w:r><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:eastAsia="宋体"/><w:sz w:val="24"/><w:szCs w:val="24"/></w:rPr>'
+        '<w:t xml:space="preserve">密  级：公开</w:t></w:r></w:p>'
     )
     doc.add_blank_lines(1)
     doc.add_custom_p(
@@ -484,7 +489,7 @@ def add_front_matter(doc):
         ("研 究 生：", "骆  赛"),
         ("指导教师：", "陈长喜  教授"),
         ("学科名称：", "（按培养方案核填一级学科）"),
-        ("研究方向：", "（按培养方案核填二级学科/方向）"),
+        ("研究方向：", "（按培养方案核填研究方向）"),
         ("所在二级学院：", "计算机与信息工程学院"),
     ], is_en=False)
     doc.add_blank_lines(3)
@@ -597,16 +602,16 @@ def add_front_matter(doc):
     )
     doc.toc_entries[-1] = (1, "英文摘要", "Abstract in English", "bm_abs_en", True)
     doc.add_en_body(
-        "With the expansion of large-scale cage-reared broiler production, poultry-house management faces challenges in timely identification of thermal environmental changes, intuitive spatial localization of abnormal events, and efficient inspection management. Integrating inspection robotics, multisource sensing, time-series prediction, and three-dimensional digital twin technologies, this thesis investigates short-term thermal-environment prediction and early warning, digital-twin-based abnormality monitoring, and their integrated application framework."
+        "With the expansion of large-scale cage-reared broiler production, poultry houses face delayed detection of thermal changes, unintuitive spatial localization of abnormalities, and constrained inspection efficiency. Integrating inspection robotics, multisource sensing, time-series prediction, and 3D digital twin technology, this thesis investigates short-term thermal-environment early warning, digital-twin abnormality monitoring, and their integrated application framework."
     )
     doc.add_en_body(
-        "First, a 5-week field monitoring experiment was conducted in a commercial cage-reared broiler house (101 m × 16 m, 7 rows × 4 tiers) in Dezhou, Shandong Province, China. A multisource acquisition system comprising an inspection robot, 12 indoor fixed monitoring points, and 1 outdoor monitoring point was established, producing 8,458 records after 3-s timestamp alignment, validity screening, and 5-min window aggregation. Treating temperature deviation (TD) and temperature–humidity index (THI) as two independent prediction targets, separate Wavelet-ECA-GRU models were trained using 36 historical time steps (180 min) to predict single-step values 30 min ahead, coupled with a dual-indicator warning strategy. The proposed models achieved RMSE values of 0.2886 and 0.4309 and R² values of 0.9238 and 0.9287 for TD and THI, respectively, outperforming LSTM, TCN, GRU, and ablation baselines, with a TD warning-state distribution consistency of 99.66%."
+        "First, a 5-week experiment was conducted in a commercial cage-reared broiler house (101 m × 16 m, 7 rows × 4 tiers) in Dezhou, Shandong, China. Using an inspection robot, 12 indoor fixed points, and 1 outdoor point, 8,458 records were generated via 3-s alignment, screening, and 5-min aggregation. Independent Wavelet-ECA-GRU models for temperature deviation (TD) and temperature–humidity index (THI) predicted single-step values 30 min ahead from 36 historical steps (180 min), coupled with dual-indicator warnings. The models achieved RMSE of 0.2886 and 0.4309 and R² of 0.9238 and 0.9287 for TD and THI, outperforming LSTM, TCN, GRU, and ablation baselines, with 99.66% TD state-distribution consistency."
     )
     doc.add_en_body(
-        "Second, a 100-day digital twin platform study was carried out in a commercial cage-reared broiler house (110 m × 16 m, 7 rows × 4 tiers × 63 groups) in Gaoyou, Yangzhou, Jiangsu Province, China. A parameterized three-dimensional scene with 1,764 semantic cage anchors was constructed. Robot SLAM poses, inspection aisles, and camera identifiers were combined for hierarchical spatial mapping of abnormalities, while a six-point two-dimensional affine transformation enabled virtual–physical robot synchronization. Field evaluation showed that differentiated model optimization reduced triangle count, vertex count, and file size by 48.34%, 30.47%, and 44.81%, shortening WebGL initial loading time from 3.84 s to 3.05 s and sustaining 67.83 fps with 500 simultaneous abnormality markers. Among 2,035 verified dead-bird events, 1,954 were accurately localized to cage row, tier, and group (96.0% accuracy). Leave-one-out cross-validation yielded a mean coordinate prediction error of 0.069353 m. Across 6,412 robot control commands, the overall execution success rate reached 99.50% with mean feedback times of 1.0–1.2 s."
+        "Second, a 100-day digital twin study was performed in a commercial broiler house (110 m × 16 m, 7 rows × 4 tiers × 63 groups) in Gaoyou, Jiangsu, China. A parameterized 3D scene with 1,764 semantic cage anchors was built, combining SLAM poses, aisles, and camera IDs for hierarchical abnormality mapping and 6-point 2D affine transformation for robot synchronization. Model optimization reduced triangles, vertices, and file size by 48.34%, 30.47%, and 44.81%, cutting WebGL load time from 3.84 s to 3.05 s and sustaining 67.83 fps with 500 markers. Among 2,035 dead-bird events, 1,954 were accurately localized (96.0%); LOOCV mean error was 0.069353 m; 6,412 control commands reached 99.50% success with 1.0–1.2 s feedback."
     )
     doc.add_en_body(
-        "Finally, a five-layer conceptual integrated monitoring and early-warning framework was proposed by combining temporal trend prediction with spatial semantic representation. Because the two field studies were conducted at different sites and production periods, the integrated framework represents a design-level scheme not yet jointly field-validated in a single house. This work provides methodological support for environmental risk warning, spatial verification of abnormalities, and inspection-robot management in cage-reared broiler production."
+        "Finally, a five-layer conceptual integrated framework combining temporal prediction and spatial mapping was proposed. As the two studies occurred at different sites and periods, this framework remains a design scheme not yet jointly field-validated, providing methodological support for thermal warning, abnormality verification, and robot management."
     )
     doc.add_custom_p(
         "Key words: cage-reared broilers; inspection robot; environmental prediction and early warning; temperature deviation; temperature–humidity index; digital twin; abnormal-event localization",

@@ -56,13 +56,9 @@ def xesc(text):
 # OMML (Word native math) helper builders
 # =====================================================================
 def mr(text, italic=None):
-    """OMML math run <m:r>. Numbers/operators upright by default; Latin letters italic unless italic=False."""
+    """OMML math run <m:r>. Canonical ECMA-376: upright uses <m:nor/>, math variables omit <m:rPr> (italic default)."""
     t = xesc(text)
-    rpr = ""
-    if italic is False:
-        rpr = '<m:rPr><m:nor/></m:rPr>'
-    elif italic is True:
-        rpr = '<m:rPr><m:sty m:val="i"/></m:rPr>'
+    rpr = '<m:rPr><m:nor/></m:rPr>' if italic is False else ""
     wrpr = '<w:rPr><w:rFonts w:ascii="Cambria Math" w:hAnsi="Cambria Math" w:cs="Cambria Math"/><w:sz w:val="24"/><w:szCs w:val="24"/></w:rPr>'
     return f'<m:r>{rpr}{wrpr}<m:t xml:space="preserve">{t}</m:t></m:r>'
 
@@ -320,10 +316,10 @@ class TJAUThesisBuilder:
         )
 
     def add_en_body(self, text, first_indent_chars=2):
-        """English Abstract body: Times New Roman 小四号(12pt), 21pt exact line spacing, justified."""
+        """English Abstract body: Times New Roman 小四号(12pt), 20pt exact line spacing (within TJAU 20-22pt), justified."""
         self.add_custom_p(
             text, align="both", east_asia="宋体", ascii_font="Times New Roman",
-            sz_pt=12.0, line_pt=21.0, first_indent_chars=first_indent_chars
+            sz_pt=12.0, line_pt=20.0, first_indent_chars=first_indent_chars
         )
 
     def add_h1(self, zh_title, en_title=None, bm_name=None, in_toc=True,
@@ -488,18 +484,18 @@ class TJAUThesisBuilder:
             '<w:left w:w="0" w:type="dxa"/><w:right w:w="0" w:type="dxa"/>'
             '</w:tblCellMar>'
         )
-        math_xml = f'<m:oMath>{omml_inner}</m:oMath>'
+        math_xml = f'<m:oMathPara><m:oMath>{omml_inner}</m:oMath></m:oMathPara>'
         num_xml = make_run_xml(f"({eq_num})", east_asia="宋体", ascii_font="Times New Roman", sz_pt=12.0)
         tbl = (
             f'<w:tbl><w:tblPr><w:tblW w:w="{self.CONTENT_WIDTH_TWIPS}" w:type="dxa"/>'
             f'<w:jc w:val="center"/>{no_borders}{cell_mar}<w:tblLayout w:type="fixed"/></w:tblPr>'
             f'<w:tblGrid><w:gridCol w:w="{w_side}"/><w:gridCol w:w="{w_mid}"/><w:gridCol w:w="{w_side}"/></w:tblGrid>'
             '<w:tr><w:trPr><w:cantSplit/></w:trPr>'
-            f'<w:tc><w:tcPr><w:tcW w:w="{w_side}" w:type="dxa"/><w:vAlign w:val="center"/></w:tcPr><w:p/></w:tc>'
+            f'<w:tc><w:tcPr><w:tcW w:w="{w_side}" w:type="dxa"/><w:vAlign w:val="center"/></w:tcPr><w:p><w:pPr><w:spacing w:line="240" w:lineRule="auto"/></w:pPr></w:p></w:tc>'
             f'<w:tc><w:tcPr><w:tcW w:w="{w_mid}" w:type="dxa"/><w:vAlign w:val="center"/></w:tcPr>'
-            f'<w:p><w:pPr><w:spacing w:before="60" w:after="60" w:line="280" w:lineRule="auto"/><w:jc w:val="center"/></w:pPr>{math_xml}</w:p></w:tc>'
+            f'<w:p><w:pPr><w:spacing w:before="80" w:after="80" w:line="240" w:lineRule="auto"/><w:jc w:val="center"/></w:pPr>{math_xml}</w:p></w:tc>'
             f'<w:tc><w:tcPr><w:tcW w:w="{w_side}" w:type="dxa"/><w:vAlign w:val="center"/></w:tcPr>'
-            f'<w:p><w:pPr><w:spacing w:before="60" w:after="60"/><w:jc w:val="right"/></w:pPr>{num_xml}</w:p></w:tc>'
+            f'<w:p><w:pPr><w:spacing w:before="80" w:after="80" w:line="240" w:lineRule="auto"/><w:jc w:val="right"/></w:pPr>{num_xml}</w:p></w:tc>'
             '</w:tr></w:tbl>'
         )
         self.body_parts.append(tbl)
@@ -666,7 +662,7 @@ class TJAUThesisBuilder:
             f'</pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing>'
         )
         self.body_parts.append(
-            '<w:p><w:pPr><w:keepNext/><w:spacing w:before="120" w:after="60"/><w:jc w:val="center"/></w:pPr>'
+            '<w:p><w:pPr><w:keepNext/><w:spacing w:before="140" w:after="60" w:line="240" w:lineRule="auto"/><w:jc w:val="center"/></w:pPr>'
             f'<w:r>{drawing}</w:r></w:p>'
         )
         self.add_custom_p(
@@ -752,7 +748,7 @@ class TJAUThesisBuilder:
       <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
     </w:rPr></w:rPrDefault>
     <w:pPrDefault><w:pPr>
-      <w:spacing w:line="420" w:lineRule="exact"/>
+      <w:spacing w:line="240" w:lineRule="auto"/>
     </w:pPr></w:pPrDefault>
   </w:docDefaults>
   <w:style w:type="paragraph" w:default="1" w:styleId="Normal">

@@ -1,0 +1,113 @@
+name: Stage 2 - Cloud Build and QA Optimized Thesis
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit_to_main:
+        description: 'Commit verified unencrypted 大论文.docx directly to main'
+        type: boolean
+        required: true
+        default: true
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/build-thesis.yml'
+      - 'scripts/**'
+
+permissions:
+  contents: write
+
+jobs:
+  build_and_qa:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONIOENCODING: utf-8
+      ORIGINAL_THESIS_COMMIT: 902385193b
+
+    steps:
+      - name: Checkout repository with full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install LibreOffice, CJK/Liberation fonts, and Python venv
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libreoffice-writer \
+            fonts-noto-cjk \
+            fonts-liberation \
+            fonts-dejavu-core \
+            python3-venv
+          fc-cache -fv
+
+      - name: Set up Python virtual environment
+        run: |
+          python3 -m venv /tmp/venv
+          /tmp/venv/bin/pip install --upgrade pip
+          /tmp/venv/bin/pip install python-docx pymupdf pillow matplotlib numpy
+
+      - name: Extract pristine original thesis draft from immutable commit
+        run: |
+          git show "${ORIGINAL_THESIS_COMMIT}:大论文.docx" > /tmp/original_thesis.docx
+          ls -lh /tmp/original_thesis.docx
+
+      - name: Extract real SCI figures and render diagrams in cloud
+        run: |
+          /tmp/venv/bin/python scripts/extract_and_draw_figs.py
+
+      - name: Build optimized TJAU Academic Master Thesis (2-Pass LibreOffice + QA)
+        env:
+          SRC_THESIS_DOCX: /tmp/original_thesis.docx
+          OUT_THESIS_DOCX: 大论文.docx
+        run: |
+          /tmp/venv/bin/python scripts/build_thesis_cloud.py
+          ls -lh 大论文.docx /tmp/qa_out
+
+      - name: Publish Step Summary
+        run: |
+          cat /tmp/qa_out/QA_REPORT.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload built thesis, preview PDF, and QA contact sheets as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: optimized-thesis-and-qa
+          path: |
+            大论文.docx
+            /tmp/qa_out/QA_REPORT.md
+            /tmp/qa_out/qa_sheet_*.jpg
+            /tmp/qa_out/大论文.pdf
+          retention-days: 30
+
+      - name: Publish QA report and visual contact sheets to cloud-qa branch
+        run: |
+          QA_WORK="/tmp/publish_qa"
+          rm -rf "$QA_WORK"
+          mkdir -p "$QA_WORK/qa"
+          cp /tmp/qa_out/QA_REPORT.md "$QA_WORK/qa/"
+          cp /tmp/qa_out/qa_sheet_*.jpg "$QA_WORK/qa/"
+          cd "$QA_WORK"
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config core.quotepath false
+          git checkout -b cloud-qa
+          git add .
+          git commit -m "qa: cloud build report and visual contact sheets"
+          git remote add origin "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+          git push --force origin cloud-qa
+
+      - name: Commit verified unencrypted 大论文.docx directly to main
+        if: ${{ github.event_name == 'push' || inputs.commit_to_main == true }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config core.quotepath false
+          git add 大论文.docx
+          if git diff --cached --quiet; then
+            echo "No changes to 大论文.docx"
+          else
+            git commit -m "feat: publish cloud-built TJAU academic master thesis (unencrypted, 24 figs, 51 OMML eqs) [skip ci]"
+            git push origin HEAD:main
+          fi

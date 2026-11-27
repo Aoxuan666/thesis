@@ -1,0 +1,21 @@
+{
+  "baseUrl": "http://{host}:{port}",
+  "authMode": "BearerToken",
+  "bearerToken": "",
+  "userName": "",
+  "password": "",
+  "tenantId": "000000",
+  "clientId": "",
+  "robotImei": "B{ROBOT_IMEI_C}",
+  "movePath": "/system/manual/{name}",
+  "chargePath": "/system/manual/charge",
+  "rotatePath": "/system/manual/rotate/{degree}",
+  "stopAllPath": "/system/RobotInitialize/stopAll/{robotId}",
+  "liftPath": "/system/upRelay/upLifting/{position}/{robotId}",
+  "forwardName": "forward",
+  "backwardName": "backward",
+  "turnLeftName": "left",
+  "turnRightName": "right",
+  "useNumericDirection": false,
+  "note": "authMode 可选 BearerToken / Login / OpenSign。BearerToken 需填 bearerToken；Login 需填 userName、password、clientId；OpenSign 需后端新增 /open 控制接口。"
+}

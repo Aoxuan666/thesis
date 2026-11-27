@@ -1,0 +1,15 @@
+{
+  "enabled": true,
+  "targetOrigin": "*",
+  "robotPoseInterval": 0.2,
+  "environmentInterval": 1.0,
+  "monitorPointInterval": 2.0,
+  "pushRobotPose": true,
+  "pushEnvironment": true,
+  "pushAbnormalCounts": true,
+  "pushTaskState": true,
+  "pushMonitorPoints": false,
+  "forwardWarningLogs": true,
+  "allowWebPoseOverride": false,
+  "logOnStart": true
+}

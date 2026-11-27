@@ -1,0 +1,60 @@
+{
+  "dataSourceMode": "Demo",
+
+  "sources": [
+    {
+      "name": "四合一环境传感器",
+      "apiUrl": "http://{host}:{port}/open/monitor/points/latest",
+      "queryString": "tenantId=000000",
+      "method": "GET",
+      "requestTimeoutSeconds": 10,
+      "pollIntervalSeconds": 5,
+      "disabled": false,
+      "fieldMap": []
+    }
+  ],
+
+  "points": [
+    { "pointId": "P01", "displayName": "前区左侧", "disabled": false, "useManualPosition": false },
+    { "pointId": "P02", "displayName": "前区右侧", "disabled": false, "useManualPosition": false },
+    { "pointId": "P03", "displayName": "后区左侧", "disabled": false, "useManualPosition": false },
+    { "pointId": "P04", "displayName": "后区右侧", "disabled": false, "useManualPosition": false }
+  ],
+
+  "metricSettings": [
+    { "key": "illuminance", "label": "光照", "unit": "lux", "aliases": ["lux", "light"], "useRange": true, "min": 5, "max": 500 },
+    { "key": "windspeed", "label": "风速", "unit": "m/s", "aliases": ["wind", "wind_speed", "airspeed"], "useRange": true, "min": 0, "max": 1.5 },
+    { "key": "staticpressure", "label": "静压", "unit": "Pa", "aliases": ["pressure", "static_pressure"], "useRange": false, "min": 0, "max": 0 }
+  ],
+
+  "layoutColumns": 2,
+  "leftRightSpacing": 6,
+  "frontBackSpacing": 8,
+  "pointHeight": 4.6,
+  "heightCeilingRatio": 1,
+  "sideEdgeMargin": 2.5,
+  "frontBackEdgeMargin": 6,
+  "sideInsetRatio": 0.16,
+  "frontBackInsetRatio": 0.22,
+  "cardVisualScale": 1,
+  "layoutDriftTolerance": 0.8,
+  "offlineAfterSeconds": 30,
+  "startupGraceSeconds": 15,
+
+  "temperatureRange": [18, 28],
+  "humidityRange": [45, 70],
+  "co2Maximum": 1500,
+  "ammoniaMaximum": 15,
+
+  "autoFillDemoDataOnStart": true,
+  "autoCreateUnknownPoints": true,
+
+  "fetchOnStart": true,
+  "enablePolling": true,
+  "pollingIntervalSeconds": 5,
+  "requestTimeoutSeconds": 10,
+  "logRequests": true,
+  "normalizeNumericPointId": true,
+
+  "note": "通用配置说明：1) 加点位——往 points 里加一行即可，layoutColumns 控制每行几个，行数自动算。2) 加指标——后端返回的任何新数字字段会自动变成扩展指标；想控制显示名/单位/上下限就加到 metricSettings。3) 换厂家——只改 sources[].fieldMap，把对方字段名映射到 temperature/humidity/co2/ammonia 或任意扩展指标名。4) dataSourceMode 从 Demo 改成 Backend 就切到真实接口，先把 apiUrl 指向 mock_server.py 可本地联调。"
+}

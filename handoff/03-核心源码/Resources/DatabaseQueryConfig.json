@@ -1,0 +1,62 @@
+{
+  "baseUrl": "http://{host}:{port}",
+  "queryPath": "/open/db/query",
+  "tenantId": "000000",
+  "appKey": "",
+  "appSecret": "",
+  "useSignature": false,
+  "timeoutSeconds": 15,
+  "queries": [
+    {
+      "id": "dict",
+      "label": "字典数据（联调用）",
+      "table": "sys_dict_data",
+      "columns": ["dict_code", "dict_label", "dict_value", "dict_type", "status"],
+      "where": [
+        {
+          "column": "dict_type",
+          "op": "eq",
+          "value": "sys_normal_disable"
+        }
+      ],
+      "orderBy": "dict_code asc",
+      "pageNum": 1,
+      "pageSize": 20,
+      "extraParams": [],
+      "autoRefresh": false,
+      "refreshSeconds": 30
+    },
+    {
+      "id": "house",
+      "label": "栋舍列表（表名按实际改）",
+      "table": "sys_house",
+      "columns": ["house_code", "house_name", "status"],
+      "where": [],
+      "orderBy": "house_code asc",
+      "pageNum": 1,
+      "pageSize": 50,
+      "extraParams": [],
+      "autoRefresh": false,
+      "refreshSeconds": 60
+    },
+    {
+      "id": "robot",
+      "label": "机器人绑定关系（表名按实际改）",
+      "table": "robot_info",
+      "columns": [],
+      "where": [
+        {
+          "column": "house_code",
+          "op": "eq",
+          "value": "50"
+        }
+      ],
+      "orderBy": "",
+      "pageNum": 1,
+      "pageSize": 100,
+      "extraParams": [],
+      "autoRefresh": false,
+      "refreshSeconds": 30
+    }
+  ]
+}

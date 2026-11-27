@@ -1,0 +1,167 @@
+﻿序号,相对路径,语言,所属模块,行数,字节数
+1,web-integration/README.md,Markdown,Web集成前端,,17438
+2,web-integration/nginx.conf,Nginx,Web集成前端,113,4996
+3,backend/backend-open-robot-api/OpenRobotMotionController.java,Java,后端服务 / backend-open-robot-api,56,2395
+4,backend/backend-open-robot-api/OpenRobotMotionService.java,Java,后端服务 / backend-open-robot-api,180,6901
+5,backend/backend-open-robot-api/README.md,Markdown,后端服务 / backend-open-robot-api,,6023
+6,backend/backend-open-robot-api/verify_open_api.py,Python,后端服务 / backend-open-robot-api,123,3749
+7,backend/database-api/README.md,Markdown,后端服务 / database-api,,11872
+8,backend/database-api/TableQueryController.java,Java,后端服务 / database-api,91,3720
+9,backend/database-api/TableQueryService.java,Java,后端服务 / database-api,411,13584
+10,backend/database-api/mock_db_server.py,Python,后端服务 / database-api,458,17649
+11,backend/monitoring-point-api/MonitoringPointController.java,Java,后端服务 / monitoring-point-api,65,2519
+12,backend/monitoring-point-api/MonitoringPointService.java,Java,后端服务 / monitoring-point-api,152,6127
+13,backend/monitoring-point-api/README.md,Markdown,后端服务 / monitoring-point-api,,10209
+14,backend/monitoring-point-api/mock_server.py,Python,后端服务 / monitoring-point-api,257,9747
+15,backend/robot-inspection-api/README.md,Markdown,后端服务 / robot-inspection-api,,9603
+16,backend/robot-inspection-api/RobotInspectionController.java,Java,后端服务 / robot-inspection-api,58,2534
+17,backend/robot-inspection-api/RobotInspectionService.java,Java,后端服务 / robot-inspection-api,342,11087
+18,unity-client/Packages/manifest.json,JSON,Unity包清单,45,1810
+19,unity-client/ProjectSettings/ProjectVersion.txt,Text,Unity工程配置,,89
+20,unity-client/ProjectSettings/SceneTemplateSettings.json,JSON,Unity工程配置,121,3534
+21,unity-client/Resources/DatabaseQueryConfig.json,JSON,Unity运行时配置,62,1465
+22,unity-client/Resources/MonitoringPointConfig.json,JSON,Unity运行时配置,60,2481
+23,unity-client/Resources/RobotBackendConfig.json,JSON,Unity运行时配置,21,797
+24,unity-client/Resources/WebBridgeConfig.json,JSON,Unity运行时配置,15,356
+25,unity-client/Script/CageColumnAnchorAutoSetup.cs,C#,Unity客户端 / 根目录,172,5129
+26,unity-client/Script/CageColumnAnchorAutoSetup.cs.meta,Unity Meta,Unity客户端 / 根目录,,243
+27,unity-client/Script/CageHouseEditorGenerator.cs,C#,Unity客户端 / 根目录,833,21697
+28,unity-client/Script/CageHouseEditorGenerator.cs.meta,Unity Meta,Unity客户端 / 根目录,,243
+29,unity-client/Script/CageHouseGenerator.cs,C#,Unity客户端 / 根目录,1083,32886
+30,unity-client/Script/CageHouseGenerator.cs.meta,Unity Meta,Unity客户端 / 根目录,,243
+31,unity-client/Script/CameraSwitcher.cs,C#,Unity客户端 / 根目录,191,5377
+32,unity-client/Script/CameraSwitcher.cs.meta,Unity Meta,Unity客户端 / 根目录,,243
+33,unity-client/Script/CharacterMove.cs,C#,Unity客户端 / 根目录,57,1704
+34,unity-client/Script/CharacterMove.cs.meta,Unity Meta,Unity客户端 / 根目录,,243
+35,unity-client/Script/Common.meta,Unity Meta,Unity客户端 / 根目录,,172
+36,unity-client/Script/Database.meta,Unity Meta,Unity客户端 / 根目录,,172
+37,unity-client/Script/Editor.meta,Unity Meta,Unity客户端 / 根目录,,172
+38,unity-client/Script/FixedMonitoringPoint.cs,C#,Unity客户端 / 根目录,424,13573
+39,unity-client/Script/FixedMonitoringPoint.cs.meta,Unity Meta,Unity客户端 / 根目录,,243
+40,unity-client/Script/FixedMonitoringPointApiClient.cs,C#,Unity客户端 / 根目录,1364,39621
+41,unity-client/Script/FixedMonitoringPointApiClient.cs.meta,Unity Meta,Unity客户端 / 根目录,,243
+42,unity-client/Script/FixedMonitoringPointBillboard.cs,C#,Unity客户端 / 根目录,57,1652
+43,unity-client/Script/FixedMonitoringPointBillboard.cs.meta,Unity Meta,Unity客户端 / 根目录,,243
+44,unity-client/Script/FixedMonitoringPointBillboardRenderer.cs,C#,Unity客户端 / 根目录,14,312
+45,unity-client/Script/FixedMonitoringPointBillboardRenderer.cs.meta,Unity Meta,Unity客户端 / 根目录,,243
+46,unity-client/Script/FixedMonitoringPointClick.cs,C#,Unity客户端 / 根目录,11,216
+47,unity-client/Script/FixedMonitoringPointClick.cs.meta,Unity Meta,Unity客户端 / 根目录,,243
+48,unity-client/Script/FixedMonitoringPointSystem.cs,C#,Unity客户端 / 根目录,1653,56409
+49,unity-client/Script/FixedMonitoringPointSystem.cs.meta,Unity Meta,Unity客户端 / 根目录,,243
+50,unity-client/Script/MonitoringPointBootstrap.cs,C#,Unity客户端 / 根目录,58,2035
+51,unity-client/Script/MonitoringPointBootstrap.cs.meta,Unity Meta,Unity客户端 / 根目录,,243
+52,unity-client/Script/MonitoringPointTypes.cs,C#,Unity客户端 / 根目录,352,11856
+53,unity-client/Script/MonitoringPointTypes.cs.meta,Unity Meta,Unity客户端 / 根目录,,243
+54,unity-client/Script/RobotEnvironmentInfoPanel.cs,C#,Unity客户端 / 根目录,538,16881
+55,unity-client/Script/RobotEnvironmentInfoPanel.cs.meta,Unity Meta,Unity客户端 / 根目录,,243
+56,unity-client/Script/RobotFollowInfoPanel.cs,C#,Unity客户端 / 根目录,628,20992
+57,unity-client/Script/RobotFollowInfoPanel.cs.meta,Unity Meta,Unity客户端 / 根目录,,243
+58,unity-client/Script/RobotSceneController.cs,C#,Unity客户端 / 根目录,101,3177
+59,unity-client/Script/RobotSceneController.cs.meta,Unity Meta,Unity客户端 / 根目录,,243
+60,unity-client/Script/SceneMeshStatsReporter.cs,C#,Unity客户端 / 根目录,298,8104
+61,unity-client/Script/SceneMeshStatsReporter.cs.meta,Unity Meta,Unity客户端 / 根目录,,243
+62,unity-client/Script/SlamwareUnityMapper.cs,C#,Unity客户端 / 根目录,85,2387
+63,unity-client/Script/SlamwareUnityMapper.cs.meta,Unity Meta,Unity客户端 / 根目录,,243
+64,unity-client/Script/UI 1.meta,Unity Meta,Unity客户端 / 根目录,,172
+65,unity-client/Script/UI.meta,Unity Meta,Unity客户端 / 根目录,,172
+66,unity-client/Script/WebGLFirstLoadTimeReporter.cs,C#,Unity客户端 / 根目录,66,2093
+67,unity-client/Script/WebGLFirstLoadTimeReporter.cs.meta,Unity Meta,Unity客户端 / 根目录,,243
+68,unity-client/Script/WebGLLoadTimePlugin.jslib,JavaScript,Unity客户端 / 根目录,17,451
+69,unity-client/Script/WebGLLoadTimePlugin.jslib.meta,Unity Meta,Unity客户端 / 根目录,,604
+70,unity-client/Script/WebGL导入Vue使用教程.md,Markdown,Unity客户端 / 根目录,,15123
+71,unity-client/Script/WebGL导入Vue使用教程.md.meta,Unity Meta,Unity客户端 / 根目录,,158
+72,unity-client/Script/WebGl.meta,Unity Meta,Unity客户端 / 根目录,,172
+73,unity-client/Script/shiyanshi.meta,Unity Meta,Unity客户端 / 根目录,,172
+74,unity-client/Script/shiyanshi.zip.meta,Unity Meta,Unity客户端 / 根目录,,155
+75,unity-client/Script/yichangweizhi.meta,Unity Meta,Unity客户端 / 根目录,,172
+76,web-integration/src/UnityTwin.tsx,TypeScript,Web集成前端,270,8613
+77,web-integration/src/UnityTwin.vue,Vue,Web集成前端,298,7864
+78,web-integration/src/index.ts,TypeScript,Web集成前端,45,1124
+79,web-integration/src/types.ts,TypeScript,Web集成前端,242,6304
+80,web-integration/src/unityBridge.ts,TypeScript,Web集成前端,451,13526
+81,unity-client/Plugins/WebGL/PoultryTwinBridge.jslib,JavaScript,Unity客户端 / Plugins,54,2011
+82,unity-client/Plugins/WebGL/PoultryTwinBridge.jslib.meta,Unity Meta,Unity客户端 / Plugins,,604
+83,unity-client/Script/Common/OpenApiSigner.cs,C#,Unity客户端 / Common,294,9731
+84,unity-client/Script/Common/OpenApiSigner.cs.meta,Unity Meta,Unity客户端 / Common,,243
+85,unity-client/Script/Database/DatabaseTableClient.cs,C#,Unity客户端 / Database,1232,36344
+86,unity-client/Script/Database/DatabaseTableClient.cs.meta,Unity Meta,Unity客户端 / Database,,243
+87,unity-client/Script/Database/DatabaseTableDemo.cs,C#,Unity客户端 / Database,92,2536
+88,unity-client/Script/Database/DatabaseTableDemo.cs.meta,Unity Meta,Unity客户端 / Database,,243
+89,unity-client/Script/Database/DatabaseTableTypes.cs,C#,Unity客户端 / Database,470,13294
+90,unity-client/Script/Database/DatabaseTableTypes.cs.meta,Unity Meta,Unity客户端 / Database,,243
+91,unity-client/Script/Editor/CageHouseGeneratorInspector.cs,C#,Unity客户端 / Editor,141,4520
+92,unity-client/Script/Editor/CageHouseGeneratorInspector.cs.meta,Unity Meta,Unity客户端 / Editor,,243
+93,unity-client/Script/Editor/MonitoringPointLayoutTool.cs,C#,Unity客户端 / Editor,326,10609
+94,unity-client/Script/Editor/MonitoringPointLayoutTool.cs.meta,Unity Meta,Unity客户端 / Editor,,243
+95,unity-client/Script/Editor/WebGLBuildTool.cs,C#,Unity客户端 / Editor,577,20996
+96,unity-client/Script/Editor/WebGLBuildTool.cs.meta,Unity Meta,Unity客户端 / Editor,,243
+97,unity-client/Script/UI/CrispTextOverlay.cs,C#,Unity客户端 / UI,270,9044
+98,unity-client/Script/UI/CrispTextOverlay.cs.meta,Unity Meta,Unity客户端 / UI,,243
+99,unity-client/Script/UI/CrispUIEnhancer.cs,C#,Unity客户端 / UI,36,985
+100,unity-client/Script/UI/CrispUIEnhancer.cs.meta,Unity Meta,Unity客户端 / UI,,243
+101,unity-client/Script/UI/EnvironmentTrendChart.cs,C#,Unity客户端 / UI,266,9539
+102,unity-client/Script/UI/EnvironmentTrendChart.cs.meta,Unity Meta,Unity客户端 / UI,,243
+103,unity-client/Script/UI/PoultryTwinHUDActions.cs,C#,Unity客户端 / UI,1400,58577
+104,unity-client/Script/UI/PoultryTwinHUDActions.cs.meta,Unity Meta,Unity客户端 / UI,,243
+105,unity-client/Script/UI/PoultryTwinHUDBuilder.cs,C#,Unity客户端 / UI,731,43433
+106,unity-client/Script/UI/PoultryTwinHUDBuilder.cs.meta,Unity Meta,Unity客户端 / UI,,243
+107,unity-client/Script/UI/PoultryTwinHUDButtonHook.cs,C#,Unity客户端 / UI,80,2444
+108,unity-client/Script/UI/PoultryTwinHUDButtonHook.cs.meta,Unity Meta,Unity客户端 / UI,,243
+109,unity-client/Script/UI/PoultryTwinHUDController.cs,C#,Unity客户端 / UI,936,35201
+110,unity-client/Script/UI/PoultryTwinHUDController.cs.meta,Unity Meta,Unity客户端 / UI,,243
+111,unity-client/Script/UI/PoultryTwinHUDLanguageSwitcher.cs,C#,Unity客户端 / UI,763,27029
+112,unity-client/Script/UI/PoultryTwinHUDLanguageSwitcher.cs.meta,Unity Meta,Unity客户端 / UI,,243
+113,unity-client/Script/WebGl/PoultryTwinWebBridge.cs,C#,Unity客户端 / WebGl,1162,35843
+114,unity-client/Script/WebGl/PoultryTwinWebBridge.cs.meta,Unity Meta,Unity客户端 / WebGl,,243
+115,unity-client/Script/WebGl/WebBridgeBootstrap.cs,C#,Unity客户端 / WebGl,80,2697
+116,unity-client/Script/WebGl/WebBridgeBootstrap.cs.meta,Unity Meta,Unity客户端 / WebGl,,243
+117,unity-client/Script/WebGl/WebBridgeJson.cs,C#,Unity客户端 / WebGl,421,11863
+118,unity-client/Script/WebGl/WebBridgeJson.cs.meta,Unity Meta,Unity客户端 / WebGl,,243
+119,unity-client/Script/WebGl/WebBridgeMessages.cs,C#,Unity客户端 / WebGl,158,4518
+120,unity-client/Script/WebGl/WebBridgeMessages.cs.meta,Unity Meta,Unity客户端 / WebGl,,243
+121,unity-client/Script/WebGl/WebBridgeSettings.cs,C#,Unity客户端 / WebGl,53,2107
+122,unity-client/Script/WebGl/WebBridgeSettings.cs.meta,Unity Meta,Unity客户端 / WebGl,,243
+123,unity-client/Script/shiyanshi/RobotBackendMotionClient.cs,C#,Unity客户端 / shiyanshi,785,26731
+124,unity-client/Script/shiyanshi/RobotBackendMotionClient.cs.meta,Unity Meta,Unity客户端 / shiyanshi,,243
+125,unity-client/Script/shiyanshi/RobotLocalPoseClient.cs,C#,Unity客户端 / shiyanshi,122,3523
+126,unity-client/Script/shiyanshi/RobotLocalPoseClient.cs.meta,Unity Meta,Unity客户端 / shiyanshi,,243
+127,unity-client/Script/shiyanshi/RobotMapLocator.cs,C#,Unity客户端 / shiyanshi,898,28355
+128,unity-client/Script/shiyanshi/RobotMapLocator.cs.meta,Unity Meta,Unity客户端 / shiyanshi,,243
+129,unity-client/Script/shiyanshi/RobotMotionApiClient.cs,C#,Unity客户端 / shiyanshi,620,19820
+130,unity-client/Script/shiyanshi/RobotMotionApiClient.cs.meta,Unity Meta,Unity客户端 / shiyanshi,,243
+131,unity-client/Script/shiyanshi/RobotMotionHoldButton.cs,C#,Unity客户端 / shiyanshi,87,2108
+132,unity-client/Script/shiyanshi/RobotMotionHoldButton.cs.meta,Unity Meta,Unity客户端 / shiyanshi,,243
+133,unity-client/Script/shiyanshi/RobotOpenApiClient.cs,C#,Unity客户端 / shiyanshi,1199,37307
+134,unity-client/Script/shiyanshi/RobotOpenApiClient.cs.meta,Unity Meta,Unity客户端 / shiyanshi,,243
+135,unity-client/Script/shiyanshi/RobotRealtimeRouteByTransform.cs,C#,Unity客户端 / shiyanshi,126,3258
+136,unity-client/Script/shiyanshi/RobotRealtimeRouteByTransform.cs.meta,Unity Meta,Unity客户端 / shiyanshi,,243
+137,unity-client/Script/shiyanshi/WebGLCameraController.cs,C#,Unity客户端 / shiyanshi,199,5946
+138,unity-client/Script/shiyanshi/WebGLCameraController.cs.meta,Unity Meta,Unity客户端 / shiyanshi,,243
+139,unity-client/Script/yichangweizhi/AbnormalChickenApiClient.cs,C#,Unity客户端 / yichangweizhi,2013,61546
+140,unity-client/Script/yichangweizhi/AbnormalChickenApiClient.cs.meta,Unity Meta,Unity客户端 / yichangweizhi,,243
+141,unity-client/Script/yichangweizhi/AbnormalEventActions.cs,C#,Unity客户端 / yichangweizhi,816,34830
+142,unity-client/Script/yichangweizhi/AbnormalEventActions.cs.meta,Unity Meta,Unity客户端 / yichangweizhi,,243
+143,unity-client/Script/yichangweizhi/AbnormalExcelExporter.cs,C#,Unity客户端 / yichangweizhi,316,11142
+144,unity-client/Script/yichangweizhi/AbnormalExcelExporter.cs.meta,Unity Meta,Unity客户端 / yichangweizhi,,243
+145,unity-client/Script/yichangweizhi/AbnormalFpsExperiment.cs,C#,Unity客户端 / yichangweizhi,339,10600
+146,unity-client/Script/yichangweizhi/AbnormalFpsExperiment.cs.meta,Unity Meta,Unity客户端 / yichangweizhi,,243
+147,unity-client/Script/yichangweizhi/AbnormalInfoPanelBillboard.cs,C#,Unity客户端 / yichangweizhi,78,1981
+148,unity-client/Script/yichangweizhi/AbnormalInfoPanelBillboard.cs.meta,Unity Meta,Unity客户端 / yichangweizhi,,243
+149,unity-client/Script/yichangweizhi/AbnormalInfoPanelView.cs,C#,Unity客户端 / yichangweizhi,898,32388
+150,unity-client/Script/yichangweizhi/AbnormalInfoPanelView.cs.meta,Unity Meta,Unity客户端 / yichangweizhi,,243
+151,unity-client/Script/yichangweizhi/AbnormalMarker.cs,C#,Unity客户端 / yichangweizhi,38,994
+152,unity-client/Script/yichangweizhi/AbnormalMarker.cs.meta,Unity Meta,Unity客户端 / yichangweizhi,,243
+153,unity-client/Script/yichangweizhi/AbnormalPanelClickProxy.cs,C#,Unity客户端 / yichangweizhi,33,667
+154,unity-client/Script/yichangweizhi/AbnormalPanelClickProxy.cs.meta,Unity Meta,Unity客户端 / yichangweizhi,,243
+155,unity-client/Script/yichangweizhi/AbnormalVisualizer.cs,C#,Unity客户端 / yichangweizhi,1156,35983
+156,unity-client/Script/yichangweizhi/AbnormalVisualizer.cs.meta,Unity Meta,Unity客户端 / yichangweizhi,,243
+157,unity-client/Script/yichangweizhi/CageNumberLabelBillboard.cs,C#,Unity客户端 / yichangweizhi,60,1620
+158,unity-client/Script/yichangweizhi/CageNumberLabelBillboard.cs.meta,Unity Meta,Unity客户端 / yichangweizhi,,243
+159,unity-client/Script/yichangweizhi/ExcelFileDownload.jslib,JavaScript,Unity客户端 / yichangweizhi,19,621
+160,unity-client/Script/yichangweizhi/ExcelFileDownload.jslib.meta,Unity Meta,Unity客户端 / yichangweizhi,,604
+161,unity-client/Script/yichangweizhi/New Lighting Settings.lighting.meta,Unity Meta,Unity客户端 / yichangweizhi,,200
+162,unity-client/Script/yichangweizhi/PhotoPreviewLoader.cs,C#,Unity客户端 / yichangweizhi,40,992
+163,unity-client/Script/yichangweizhi/PhotoPreviewLoader.cs.meta,Unity Meta,Unity客户端 / yichangweizhi,,243
+164,unity-client/ProjectSettings/Packages/com.unity.testtools.codecoverage/Settings.json,JSON,Unity工程配置,7,179
+
+合计,164 个文件,,,31329,1131498

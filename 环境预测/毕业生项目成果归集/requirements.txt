@@ -1,0 +1,18 @@
+--extra-index-url https://download.pytorch.org/whl/cu126
+
+numpy==2.2.5
+pandas==2.3.3
+scikit-learn==1.7.2
+scipy==1.15.3
+matplotlib==3.10.8
+seaborn==0.13.2
+PyWavelets==1.8.0
+torch==2.10.0+cu126
+torchvision==0.25.0+cu126
+joblib==1.5.3
+
+# 可选：XGBoost 模型推理需要，当前 chicken_warn 环境未安装
+# xgboost==2.1.4
+
+# 说明：以上版本来自本机已验证的 conda 环境 chicken_warn（Python 3.10.19）。
+# 无 NVIDIA GPU 时，可删除 --extra-index-url 行，并把 torch 改为 CPU 版本。

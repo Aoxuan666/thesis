@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 900" width="1500" height="900">
+<defs>
+  <style>
+    .fn { font-family: 'Segoe UI', Arial, sans-serif; }
+  </style>
+  <marker id="ar" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#64748b"/></marker>
+  <marker id="arb" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#3b82f6"/></marker>
+  <marker id="arg" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#10b981"/></marker>
+  <marker id="aro" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#f59e0b"/></marker>
+  <marker id="arp" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#8b5cf6"/></marker>
+  <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#ef4444"/></marker>
+  <filter id="sh"><feDropShadow dx="1" dy="2" stdDeviation="3" flood-color="#00000020"/></filter>
+</defs>
+
+<!-- Background -->
+<rect width="1500" height="900" fill="#f8fafc"/>
+
+<!-- ===== TITLE ===== -->
+<rect x="30" y="14" width="1440" height="52" rx="8" fill="#1e293b" filter="url(#sh)"/>
+<text x="750" y="37" class="fn" font-size="17" font-weight="700" fill="#f1f5f9" text-anchor="middle">Wavelet–ECA–GRU Framework for Broiler House Temperature Deviation (TD) Short-term Prediction</text>
+<text x="750" y="56" class="fn" font-size="10" fill="#94a3b8" text-anchor="middle">Input window L = 36 steps (180 min)  →  Predict H = 6 steps ahead (30 min ahead)  |  TD = T_indoor − T_target  |  5-min time step  |  9,123 samples</text>
+
+<!-- ===== COLUMN BACKGROUNDS ===== -->
+<!-- Col 1 -->
+<rect x="30" y="80" width="205" height="790" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.2"/>
+<!-- Col 2 -->
+<rect x="247" y="80" width="200" height="790" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.2"/>
+<!-- Col 3 -->
+<rect x="459" y="80" width="215" height="790" rx="10" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1.2"/>
+<!-- Col 4 -->
+<rect x="686" y="80" width="205" height="790" rx="10" fill="#fffbeb" stroke="#fde68a" stroke-width="1.2"/>
+<!-- Col 5 -->
+<rect x="903" y="80" width="205" height="790" rx="10" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="1.2"/>
+<!-- Col 6 -->
+<rect x="1120" y="80" width="380" height="790" rx="10" fill="#fff1f2" stroke="#fecdd3" stroke-width="1.2"/>
+
+<!-- ===== COLUMN HEADERS ===== -->
+<rect x="30" y="80" width="205" height="30" rx="10" fill="#3b82f6"/>
+<rect x="30" y="96" width="205" height="14" fill="#3b82f6"/>
+<text x="132" y="100" class="fn" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">① Data Collection</text>
+
+<rect x="247" y="80" width="200" height="30" rx="10" fill="#2563eb"/>
+<rect x="247" y="96" width="200" height="14" fill="#2563eb"/>
+<text x="347" y="100" class="fn" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">② Preprocessing</text>
+
+<rect x="459" y="80" width="215" height="30" rx="10" fill="#059669"/>
+<rect x="459" y="96" width="215" height="14" fill="#059669"/>
+<text x="566" y="100" class="fn" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">③ Wavelet Decomp. (DWT)</text>
+
+<rect x="686" y="80" width="205" height="30" rx="10" fill="#d97706"/>
+<rect x="686" y="96" width="205" height="14" fill="#d97706"/>
+<text x="788" y="100" class="fn" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">④ ECA Attention</text>
+
+<rect x="903" y="80" width="205" height="30" rx="10" fill="#7c3aed"/>
+<rect x="903" y="96" width="205" height="14" fill="#7c3aed"/>
+<text x="1005" y="100" class="fn" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">⑤ GRU Encoder</text>
+
+<rect x="1120" y="80" width="380" height="30" rx="10" fill="#dc2626"/>
+<rect x="1120" y="96" width="380" height="14" fill="#dc2626"/>
+<text x="1310" y="100" class="fn" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">⑥ Prediction &amp; Warning</text>
+
+<!-- ===== COL 1: DATA COLLECTION ===== -->
+<!-- Robot box -->
+<rect x="44" y="124" width="177" height="118" rx="7" fill="#fff" stroke="#3b82f6" stroke-width="1.5" filter="url(#sh)"/>
+<rect x="44" y="124" width="177" height="24" rx="7" fill="#3b82f6"/>
+<rect x="44" y="136" width="177" height="12" fill="#3b82f6"/>
+<text x="132" y="140" class="fn" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">Inspection Robot</text>
+<text x="132" y="160" class="fn" font-size="9.5" fill="#1e40af" text-anchor="middle">● Temperature / Humidity</text>
+<text x="132" y="175" class="fn" font-size="9.5" fill="#1e40af" text-anchor="middle">● Wind Speed (m/s)</text>
+<text x="132" y="190" class="fn" font-size="9.5" fill="#1e40af" text-anchor="middle">● CO₂ Concentration (ppm)</text>
+<text x="132" y="205" class="fn" font-size="9.5" fill="#1e40af" text-anchor="middle">● Sample rate: 1 min</text>
+<text x="132" y="220" class="fn" font-size="9.5" fill="#1e40af" text-anchor="middle">● 4G wireless upload</text>
+
+<!-- Control terminal box -->
+<rect x="44" y="258" width="177" height="115" rx="7" fill="#fff" stroke="#3b82f6" stroke-width="1.5" filter="url(#sh)"/>
+<rect x="44" y="258" width="177" height="24" rx="7" fill="#3b82f6"/>
+<rect x="44" y="270" width="177" height="12" fill="#3b82f6"/>
+<text x="132" y="274" class="fn" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">Control Terminal</text>
+<text x="132" y="294" class="fn" font-size="9.5" fill="#1e40af" text-anchor="middle">● Age (Day)</text>
+<text x="132" y="308" class="fn" font-size="9.5" fill="#1e40af" text-anchor="middle">● Target Temperature (T_target)</text>
+<text x="132" y="323" class="fn" font-size="9.5" fill="#1e40af" text-anchor="middle">● Outdoor Temperature (T_out)</text>
+<text x="132" y="338" class="fn" font-size="9.5" fill="#1e40af" text-anchor="middle">● Neg. Pressure / Run State</text>
+<text x="132" y="353" class="fn" font-size="9.5" fill="#1e40af" text-anchor="middle">● 1 min sync to server</text>
+
+<!-- Sensor spec box -->
+<rect x="44" y="390" width="177" height="108" rx="7" fill="#fff" stroke="#93c5fd" stroke-width="1.2" filter="url(#sh)"/>
+<text x="132" y="409" class="fn" font-size="9.5" font-weight="700" fill="#1d4ed8" text-anchor="middle">Sensor Specifications</text>
+<line x1="54" y1="414" x2="211" y2="414" stroke="#bfdbfe" stroke-width="1"/>
+<text x="132" y="430" class="fn" font-size="9" fill="#334155" text-anchor="middle">Temp: ±0.2 °C | Range: −20~50 °C</text>
+<text x="132" y="445" class="fn" font-size="9" fill="#334155" text-anchor="middle">Humidity: ±2% RH</text>
+<text x="132" y="460" class="fn" font-size="9" fill="#334155" text-anchor="middle">Wind: ±(0.2+0.02v) m/s</text>
+<text x="132" y="475" class="fn" font-size="9" fill="#334155" text-anchor="middle">CO₂: ±50 ppm | 300–5000 ppm</text>
+<text x="132" y="490" class="fn" font-size="9" fill="#334155" text-anchor="middle">Period: 2025/5/26 – 4/30</text>
+
+<!-- Coop info box -->
+<rect x="44" y="514" width="177" height="100" rx="7" fill="#fff" stroke="#93c5fd" stroke-width="1.2" filter="url(#sh)"/>
+<text x="132" y="533" class="fn" font-size="9.5" font-weight="700" fill="#1d4ed8" text-anchor="middle">Coop Information</text>
+<line x1="54" y1="538" x2="211" y2="538" stroke="#bfdbfe" stroke-width="1"/>
+<text x="132" y="553" class="fn" font-size="9" fill="#334155" text-anchor="middle">101m×16m | 30,000+ birds</text>
+<text x="132" y="567" class="fn" font-size="9" fill="#334155" text-anchor="middle">7 rows × 4 layers cages</text>
+<text x="132" y="581" class="fn" font-size="9" fill="#334155" text-anchor="middle">24 large + 2 small fans</text>
+<text x="132" y="595" class="fn" font-size="9" fill="#334155" text-anchor="middle">Longitudinal ventilation</text>
+<text x="132" y="609" class="fn" font-size="9" fill="#334155" text-anchor="middle">Evap. cooling + wet curtain</text>
+
+<!-- ===== ARROWS COL1→COL2 ===== -->
+<line x1="221" y1="183" x2="244" y2="183" stroke="#3b82f6" stroke-width="1.8" marker-end="url(#arb)"/>
+<line x1="221" y1="315" x2="244" y2="315" stroke="#3b82f6" stroke-width="1.8" marker-end="url(#arb)"/>
+
+<!-- ===== COL 2: PREPROCESSING ===== -->
+<!-- TD Definition -->
+<rect x="261" y="124" width="172" height="86" rx="7" fill="#fff" stroke="#2563eb" stroke-width="1.5" filter="url(#sh)"/>
+<rect x="261" y="124" width="172" height="24" rx="7" fill="#2563eb"/>
+<rect x="261" y="136" width="172" height="12" fill="#2563eb"/>
+<text x="347" y="140" class="fn" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">TD Definition</text>
+<text x="347" y="162" class="fn" font-size="10.5" fill="#1e3a8a" text-anchor="middle" font-style="italic">TD = T_indoor − T_target</text>
+<text x="347" y="178" class="fn" font-size="9" fill="#334155" text-anchor="middle">Temperature Deviation (°C)</text>
+<text x="347" y="193" class="fn" font-size="9" fill="#334155" text-anchor="middle">Core prediction target</text>
+
+<!-- Align &amp; Resample -->
+<rect x="261" y="226" width="172" height="96" rx="7" fill="#fff" stroke="#2563eb" stroke-width="1.5" filter="url(#sh)"/>
+<rect x="261" y="226" width="172" height="24" rx="7" fill="#2563eb"/>
+<rect x="261" y="238" width="172" height="12" fill="#2563eb"/>
+<text x="347" y="242" class="fn" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">Align &amp; Resample</text>
+<text x="347" y="262" class="fn" font-size="9" fill="#334155" text-anchor="middle">Timestamp alignment</text>
+<text x="347" y="276" class="fn" font-size="9" fill="#334155" text-anchor="middle">1 min → 5 min resample</text>
+<text x="347" y="290" class="fn" font-size="9" fill="#334155" text-anchor="middle">Total: 9,123 samples</text>
+<text x="347" y="305" class="fn" font-size="9" fill="#334155" text-anchor="middle">Train : Test = 80 : 20</text>
+
+<!-- Missing value fill -->
+<rect x="261" y="338" width="172" height="86" rx="7" fill="#fff" stroke="#2563eb" stroke-width="1.5" filter="url(#sh)"/>
+<rect x="261" y="338" width="172" height="24" rx="7" fill="#2563eb"/>
+<rect x="261" y="350" width="172" height="12" fill="#2563eb"/>
+<text x="347" y="354" class="fn" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">Missing Value Fill</text>
+<text x="347" y="374" class="fn" font-size="9" fill="#334155" text-anchor="middle">Continuous: linear interpolation</text>
+<text x="347" y="388" class="fn" font-size="9" fill="#334155" text-anchor="middle">Discrete: forward/back fill</text>
+<text x="347" y="404" class="fn" font-size="9" fill="#334155" text-anchor="middle">Drop remaining NaN rows</text>
+
+<!-- Pearson selection -->
+<rect x="261" y="440" width="172" height="96" rx="7" fill="#fff" stroke="#2563eb" stroke-width="1.5" filter="url(#sh)"/>
+<rect x="261" y="440" width="172" height="24" rx="7" fill="#2563eb"/>
+<rect x="261" y="452" width="172" height="12" fill="#2563eb"/>
+<text x="347" y="456" class="fn" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">Pearson Feature Select</text>
+<text x="347" y="476" class="fn" font-size="9" fill="#334155" text-anchor="middle">TD+: Age (+0.81), T_out (+0.42)</text>
+<text x="347" y="490" class="fn" font-size="9" fill="#334155" text-anchor="middle">TD−: CO₂ (−0.74), T_tgt (−0.68)</text>
+<text x="347" y="504" class="fn" font-size="9" fill="#334155" text-anchor="middle">TD−: RH (−0.48)</text>
+<text x="347" y="520" class="fn" font-size="9" font-weight="600" fill="#1d4ed8" text-anchor="middle">→ 6 features selected</text>
+
+<!-- Normalization -->
+<rect x="261" y="552" width="172" height="76" rx="7" fill="#fff" stroke="#2563eb" stroke-width="1.5" filter="url(#sh)"/>
+<rect x="261" y="552" width="172" height="24" rx="7" fill="#2563eb"/>
+<rect x="261" y="564" width="172" height="12" fill="#2563eb"/>
+<text x="347" y="568" class="fn" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">Min-Max Normalization</text>
+<text x="347" y="588" class="fn" font-size="9.5" fill="#1e3a8a" text-anchor="middle" font-style="italic">x' = (x − x_min) / (x_max − x_min)</text>
+<text x="347" y="603" class="fn" font-size="9" fill="#334155" text-anchor="middle">Fit on train set → [0, 1]</text>
+<text x="347" y="618" class="fn" font-size="9" fill="#334155" text-anchor="middle">Apply to train &amp; test uniformly</text>
+
+<!-- Sliding window -->
+<rect x="261" y="644" width="172" height="84" rx="7" fill="#fff" stroke="#2563eb" stroke-width="1.5" filter="url(#sh)"/>
+<rect x="261" y="644" width="172" height="24" rx="7" fill="#2563eb"/>
+<rect x="261" y="656" width="172" height="12" fill="#2563eb"/>
+<text x="347" y="660" class="fn" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">Sliding Window Samples</text>
+<text x="347" y="680" class="fn" font-size="9" fill="#334155" text-anchor="middle">Input X: L=36 steps (180 min)</text>
+<text x="347" y="694" class="fn" font-size="9" fill="#334155" text-anchor="middle">Target y: step t+H (H=6, 30 min)</text>
+<text x="347" 

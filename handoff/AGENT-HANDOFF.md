@@ -25,11 +25,11 @@
 
 | # | 文件 | 体积 | 为什么必须给 | 怎么读 |
 |---|---|---|---|---|
-| 1 | `AGENT-HANDOFF.md`（本文件） | 6 KB | 全局定位与已知坑 | 先读 |
-| 2 | `毕业生项目成果归集/1.3.1-开发文档/1.3.1-开发文档.md` | 31 KB | **唯一的全局架构文档**：框架图、技术栈、8 个模块设计、数据库、6 个关键算法、API、安全、术语表、源码对照 | 通读第 1、3、5、6 章；第 10 章是章节↔文件对照表 |
-| 3 | `毕业生项目成果归集/1.3.3-部署文档/1.3.3-部署文档.md` | 13 KB | 真实端口、路径、Nginx、启动顺序、验证方法 | 只在涉及"跑起来"时读第 2~4 节 |
-| 4 | `毕业生项目成果归集/1.3.6-数据库/1.3.6-数据库设计说明.md` + `schema.sql` | 24 KB | 6 张表结构、索引、字段实测差异 | 需要改数据链路时读 |
-| 5 | `毕业生项目成果归集/1.3.4-源代码/1.3.4-源代码文件清单.csv` | 15 KB | 164 个文件的路径/语言/模块/行数，**它据此按需索取代码，不必全收** | 当索引查 |
+| 1 | [`AGENT-HANDOFF.md`](./AGENT-HANDOFF.md)（本文件） | 8 KB | 全局定位与已知坑 | 先读 |
+| 2 | [`01-架构/1.3.1-开发文档.md`](./01-架构/1.3.1-开发文档.md) | 31 KB | **唯一的全局架构文档**：框架图、技术栈、8 个模块设计、数据库、6 个关键算法、API、安全、术语表、源码对照 | 通读第 1、3、5、6 章；第 10 章是章节↔文件对照表 |
+| 3 | [`01-架构/1.3.3-部署文档.md`](./01-架构/1.3.3-部署文档.md) | 13 KB | 真实端口、路径、Nginx、启动顺序、验证方法 | 只在涉及"跑起来"时读第 2~4 节 |
+| 4 | [`01-架构/1.3.6-数据库设计说明.md`](./01-架构/1.3.6-数据库设计说明.md) + [`schema.sql`](./01-架构/schema.sql) | 24 KB | 6 张表结构、索引、字段实测差异 | 需要改数据链路时读 |
+| 5 | [`02-索引/1.3.4-源代码文件清单.csv`](./02-索引/1.3.4-源代码文件清单.csv) | 15 KB | 164 个文件的路径/语言/模块/行数，**它据此按需索取代码，不必全收** | 当索引查 |
 
 **不要推**：`1.3.5-项目编译文件/`（183 MB 的 wasm/贴图，对代码分析零价值）、`Assets/Models` 等美术资源（约 1.5 GB）、各处 `.meta`。
 
@@ -37,18 +37,18 @@
 
 ## 三、按分析目标追加的源码（不要一次全给）
 
-单个文件都在 `毕业生项目成果归集/1.3.4-源代码/source/unity-client/Script/` 下。这几个是**信息密度最高**的，合计 9,407 行：
+单个文件都在本目录 [`03-核心源码/`](./03-核心源码/) 下（按原工程子目录归档，`Resources/` 为运行时配置）。这几个是**信息密度最高**的，合计 9,407 行：
 
 | 文件 | 行数 | 交给它的理由 |
 |---|---|---|
-| `yichangweizhi/AbnormalChickenApiClient.cs` | 2,013 | 核心数据链路：轮询、增量游标、字段规范化、限流退避、轮次切换全在这一个文件里 |
-| `UI/PoultryTwinHUDActions.cs` | 1,400 | HUD 交互与机器人下拉的真实实现，含大量"为什么这么写"的补丁逻辑 |
-| `FixedMonitoringPointApiClient.cs` | 1,364 | 监测点拉取与场景坐标绑定 |
-| `shiyanshi/RobotOpenApiClient.cs` | 1,199 | 机器人状态轮询、栋舍切换、限流 |
-| `yichangweizhi/AbnormalVisualizer.cs` | 1,156 | 异常落位算法（display→internal 坐标换算、笼位拾取） |
-| `CageHouseGenerator.cs` | 1,083 | 参数化笼舍生成，所有几何与坐标基准的来源 |
-| `shiyanshi/RobotMapLocator.cs` | 898 | 地图坐标 ↔ 世界坐标标定 |
-| `Common/OpenApiSigner.cs` | 294 | 七段 HMAC 签名，可与后端校验逻辑对照 |
+| [`yichangweizhi/AbnormalChickenApiClient.cs`](./03-核心源码/yichangweizhi/AbnormalChickenApiClient.cs) | 2,013 | 核心数据链路：轮询、增量游标、字段规范化、限流退避、轮次切换全在这一个文件里 |
+| [`UI/PoultryTwinHUDActions.cs`](./03-核心源码/UI/PoultryTwinHUDActions.cs) | 1,400 | HUD 交互与机器人下拉的真实实现，含大量"为什么这么写"的补丁逻辑 |
+| [`FixedMonitoringPointApiClient.cs`](./03-核心源码/FixedMonitoringPointApiClient.cs) | 1,364 | 监测点拉取与场景坐标绑定 |
+| [`shiyanshi/RobotOpenApiClient.cs`](./03-核心源码/shiyanshi/RobotOpenApiClient.cs) | 1,199 | 机器人状态轮询、栋舍切换、限流 |
+| [`yichangweizhi/AbnormalVisualizer.cs`](./03-核心源码/yichangweizhi/AbnormalVisualizer.cs) | 1,156 | 异常落位算法（display→internal 坐标换算、笼位拾取） |
+| [`CageHouseGenerator.cs`](./03-核心源码/CageHouseGenerator.cs) | 1,083 | 参数化笼舍生成，所有几何与坐标基准的来源 |
+| [`shiyanshi/RobotMapLocator.cs`](./03-核心源码/shiyanshi/RobotMapLocator.cs) | 898 | 地图坐标 ↔ 世界坐标标定 |
+| [`Common/OpenApiSigner.cs`](./03-核心源码/Common/OpenApiSigner.cs) | 294 | 七段 HMAC 签名，可与后端校验逻辑对照 |
 
 若目标是**看懂系统怎么拼起来**，只需再加 3 个：`WebGl/PoultryTwinWebBridge.cs`、`WebGl/WebBridgeBootstrap.cs`、`UI/PoultryTwinHUDController.cs`。
 若目标是**复现运行**，加 `Editor/WebGLBuildTool.cs`（577 行）与 `Resources/` 下 4 个配置 json（共 5 KB）。
@@ -97,23 +97,28 @@
 
 ---
 
-## 六、推送前必须做的替换
+## 六、本仓库副本的脱敏情况
 
-| 位置 | 现状 | 处理 |
+本仓库是**公开仓库**，副本已做替换，因此**不能直接编译运行**，需填回真实值：
+
+| 占位符 | 原内容 | 出现位置 |
 |---|---|---|
-| `AbnormalChickenApiClient.cs` 内置 `appKey` / `appSecret` | 硬编码 | 替换为 `{APP_KEY}` / `{APP_SECRET}` |
-| 各 `README.md`、部署文档中的服务器 IP 与端口 | 真实地址 | 替换为 `{host}` / `{port}` |
-| `Resources/RobotBackendConfig.json` | 真实 baseUrl | 同上 |
-| HUD 截图、Excel 导出样例 | 可能含真实场区名 | 打码或换测试数据 |
+| `{APP_KEY}` / `{APP_SECRET}` | 开放接口应用标识与密钥 | `03-核心源码/` 下 `RobotOpenApiClient.cs`、`AbnormalChickenApiClient.cs` |
+| `{host}:{port}` | 后端服务地址 | 各 `*ApiClient.cs`、`Resources/*.json`、部署文档 |
+| `{robot-ip}:1448` | 机器人底盘地址 | `RobotOpenApiClient.cs` |
+| `{ROBOT_IMEI_A/B/C}` | 三台机器人设备号 | 源码注释与实测记录 |
+| `000000` | 原租户 ID | `schema.sql` 默认值、配置与文档示例 |
 
-代码里写死的密钥是"能跑"和"该改"之间的债，交接时可以直说，但**不要推给第三方智能体时不脱敏**。
+注意：`02-索引` 中 CSV 的字节数是脱敏前的统计，替换后实际字节数略小，**行数不受影响**。
+
+代码里写死的密钥是"能跑"与"该改"之间的债，交接可以直说，但公开仓库里必须脱敏。
 
 ---
 
-## 七、如果你只想推一个压缩包
+## 七、本目录一览
 
 ```
-handoff.zip
+handoff/
 ├── AGENT-HANDOFF.md
 ├── 01-架构/
 │   ├── 1.3.1-开发文档.md
@@ -125,4 +130,4 @@ handoff.zip
     └── Resources/*.json
 ```
 
-约 120 KB（另加源码）。比整包 185 MB 好读，也比只给文档可信——有代码可查，它就不会瞎猜。
+合计 445 KB，比整包 185 MB 好读，也比只给文档可信——有代码可查，它就不会瞎猜。
